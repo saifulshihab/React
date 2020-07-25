@@ -1,12 +1,26 @@
 import React from 'react';
 import logo from './logo.svg';
 import { Navbar, NavbarBrand } from 'reactstrap';
-import './App.css';
+import Menu from './components/MenuComponent';
+// import './App.css';
 
 function App() {
   return (
     <div className="App">
-      {/* <header className="App-header">
+      <Navbar dark color="primary">
+        <div className="container">
+          <NavbarBrand href="/">Restorante con Fusion</NavbarBrand>
+        </div>
+      </Navbar>
+      <Menu />
+    </div>
+  );
+}
+
+export default App;
+
+{
+  /* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -19,14 +33,5 @@ function App() {
         >
           Learn React from Scratch
         </a>
-      </header> */}
-      <Navbar dark color="primary">
-        <div className="container">
-          <NavbarBrand href="/">Confusion</NavbarBrand>
-        </div>
-      </Navbar>
-    </div>
-  );
+      </header> */
 }
-
-export default App;
