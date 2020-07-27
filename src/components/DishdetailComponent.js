@@ -22,16 +22,21 @@ class DishDetail extends Component {
   }
   renderComments(hasComment) {
     const dishComment = hasComment.map((d) => {
-        return(
+      return (
         <li className="mb-2">
-            {d.comment}<br/>
-            -- {d.author}, {d.date}
+        <p>{d.comment}
+          <br />
+          -- {d.author}, &nbsp;
+          {new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: '2-digit',
+          }).format(new Date(d.date))}
+          </p>
         </li>
-        );
+      );
     });
-    return(
-    <ul className="list-unstyled">{dishComment}</ul>
-    );
+    return <ul className="list-unstyled">{dishComment}</ul>;
   }
   render() {
     if (this.props.dishSelect) {
@@ -41,8 +46,8 @@ class DishDetail extends Component {
             {this.renderDish(this.props.dishSelect)}
           </div>
           <div className="col-md-5 m-1">
-            <h4>Comments</h4>            
-              {this.renderComments(this.props.dishSelect.comments)}            
+            <h4>Comments</h4>
+            {this.renderComments(this.props.dishSelect.comments)}
           </div>
         </div>
       );
