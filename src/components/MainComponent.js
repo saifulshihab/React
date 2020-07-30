@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
-import { Navbar, NavbarBrand } from 'reactstrap';
 import Menu from './MenuComponent';
-// import './App.css';
 import DishDetail from './DishdetailComponent';
 import { DISHES } from '../shared/dishes';
-// import { render } from 'react-dom';
-
+import Header from './HeaderComponent';
+import Footer from './FooterComponent';
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -21,11 +18,7 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <Navbar dark color="primary">
-          <div className="container">
-            <NavbarBrand href="/">Restorante con Fusion</NavbarBrand>
-          </div>
-        </Navbar>
+        <Header />
         <Menu
           dishes={this.state.dishes}
           onClick={(dishId) => this.onDishSelect(dishId)}
@@ -37,26 +30,10 @@ class Main extends Component {
             )[0]
           }
         />
+        <Footer/>
       </div>
     );
   }
 }
 
 export default Main;
-
-// {
-  //   /* <header className="App-header">
-  //         <img src={logo} className="App-logo" alt="logo" />
-  //         <p>
-  //           Edit <code>src/App.js</code> and save to reload.
-  //         </p>
-  //         <a
-  //           className="App-link"
-  //           href="https://reactjs.org"
-  //           target="_blank"
-  //           rel="noopener noreferrer"
-  //         >
-  //           Learn React from Scratch
-  //         </a>
-  //       </header> */
-// }
