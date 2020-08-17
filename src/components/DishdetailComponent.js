@@ -1,8 +1,24 @@
-import React from 'react';
-import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import React, { Component } from 'react';
+import {
+  Card,
+  CardImg,
+  CardText,
+  CardBody,
+  CardTitle,
+  Breadcrumb,
+  BreadcrumbItem,
+  Button,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Label,
+} from 'reactstrap';
+import { Control, LocalForm, Errors } from 'react-redux-form';
+
 import { Link } from 'react-router-dom';
 
-function RenderDish({dish}) {
+function RenderDish({ dish }) {
   if (dish) {
     return (
       <div>
@@ -19,7 +35,7 @@ function RenderDish({dish}) {
     return <div></div>;
   }
 }
-function RenderComments({comments}) {
+function RenderComments({ comments }) {
   if (comments != null) {
     return (
       <div>
@@ -47,31 +63,138 @@ function RenderComments({comments}) {
     return <div></div>;
   }
 }
+class CommentForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isModalOpen: false,
+    };
+    this.toggleModal = this.toggleModal.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+  }
+  toggleModal() {
+    this.setState({
+      isModalOpen: !this.state.isModalOpen,
+    });
+  }
+  handleLogin(values) {
+    this.toggleModal();
+    console.log(JSON.stringify(values));
+    alert(JSON.stringify(values));
+  }
+  render() {
+    const required = (val) => val && val.length;
+    const maxLength = (len) => (val) => !val || val.length <= len;
+    const minLength = (len) => (val) => val && val.length >= len;
+    return (
+      <div>
+        <Button outline onClick={this.toggleModal}>
+          <i class="fa fa-pencil" aria-hidden="true"></i> Submit Comment
+        </Button>
+
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
+          <ModalBody>
+            <div className="row ml-1 mr-1">
+              <div className="col">
+                <LocalForm onSubmit={(values) => this.handleLogin(values)}>
+                  <Row className="form-group">
+                    <Label htmlFor="rating">Give rating out of 5</Label>
+
+                    <Control.select
+                      className="form-control"
+                      validators={{ required: required }}
+                      model=".rating"
+                      name="rating"
+                      id="rating"
+                    >
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </Control.select>
+                    <Errors
+                      className="text-danger"
+                      model=".rating"
+                      show="touched"
+                      messages={{ required: 'Required!. ' }}
+                    />
+                  </Row>
+                  <Row className="form-group">
+                    <Label htmlFor="name">Your Name</Label>
+                    <Control.text
+                      className="form-control"
+                      name="name"
+                      validators={{
+                        required: required,
+                        minLength: minLength(3),
+                        maxLength: maxLength(15),
+                      }}
+                      model=".name"
+                      row={6}
+                      id="name"
+                    />
+                    <Errors
+                      className="text-danger"
+                      model=".name"
+                      show="touched"
+                      messages={{
+                        required: 'Required! ',
+                        minLength: 'Name should be at least 3 charecters',
+                        maxLength: 'Name should be less then 15 charecters',
+                      }}
+                    />
+                  </Row>
+                  <Row className="form-group">
+                    <Label htmlFor="comment">Comment</Label>
+                    <Control.textarea
+                      className="form-control"
+                      model=".comment"
+                      name="comment"
+                      id="comment"
+                    />
+                  </Row>
+                  <Button type="submit" value="submit" color="primary">
+                    Submit
+                  </Button>
+                </LocalForm>
+              </div>
+            </div>
+          </ModalBody>
+        </Modal>
+      </div>
+    );
+  }
+}
+
 const DishDetail = (props) => {
   if (props.dish != null) {
     return (
       <div className="container">
-      <div className="row">
+        <div className="row">
           <Breadcrumb>
-
-              <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-              <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+            <BreadcrumbItem>
+              <Link to="/menu">Menu</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
           </Breadcrumb>
           <div className="col-12">
-              <h3>{props.dish.name}</h3>
-              <hr />
-          </div>                
-      </div>
-      <div className="row">
+            <h3>{props.dish.name}</h3>
+            <hr />
+          </div>
+        </div>
+        <div className="row">
           <div className="col-12 col-md-5 m-1">
-              <RenderDish dish={props.dish} />
+            <RenderDish dish={props.dish} />
           </div>
           <div className="col-12 col-md-5 m-1">
-              <RenderComments comments={props.comments} />
+            <RenderComments comments={props.comments} />
+            <CommentForm />
           </div>
+        </div>
       </div>
-      </div>
-  );
+    );
   } else {
     return <div></div>;
   }
