@@ -35,7 +35,7 @@ function RenderDish({ dish }) {
     return <div></div>;
   }
 }
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, dishId }) {
   if (comments != null) {
     return (
       <div>
@@ -57,6 +57,7 @@ function RenderComments({ comments }) {
             );
           })}
         </ul>
+        <CommentForm addComment={addComment} dishId={dishId} />
       </div>
     );
   } else {
@@ -70,17 +71,16 @@ class CommentForm extends Component {
       isModalOpen: false,
     };
     this.toggleModal = this.toggleModal.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   toggleModal() {
     this.setState({
       isModalOpen: !this.state.isModalOpen,
     });
   }
-  handleLogin(values) {
+  handleSubmit(values) {
     this.toggleModal();
-    console.log(JSON.stringify(values));
-    alert(JSON.stringify(values));
+    this.props.addComment(this.props.dishId, values.rating, values.author, values.comment)
   }
   render() {
     const required = (val) => val && val.length;
@@ -97,7 +97,7 @@ class CommentForm extends Component {
           <ModalBody>
             <div className="row ml-1 mr-1">
               <div className="col">
-                <LocalForm onSubmit={(values) => this.handleLogin(values)}>
+                <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
                   <Row className="form-group">
                     <Label htmlFor="rating">Give rating out of 5</Label>
 
@@ -125,7 +125,7 @@ class CommentForm extends Component {
                     <Label htmlFor="name">Your Name</Label>
                     <Control.text
                       className="form-control"
-                      name="name"
+                      name="author"
                       validators={{
                         required: required,
                         minLength: minLength(3),
@@ -189,8 +189,11 @@ const DishDetail = (props) => {
             <RenderDish dish={props.dish} />
           </div>
           <div className="col-12 col-md-5 m-1">
-            <RenderComments comments={props.comments} />
-            <CommentForm />
+            <RenderComments
+              comments={props.comments}
+              addComment={props.addComment}
+              dishId={props.dish.id}
+            />
           </div>
         </div>
       </div>
