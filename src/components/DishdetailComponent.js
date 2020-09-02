@@ -17,13 +17,14 @@ import {
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 import { Loading } from './LoadingComponent';
+import { baseURL } from '../shared/baseURL';
 
 function RenderDish({ dish }) {
   if (dish) {
     return (
       <div>
         <Card>
-          <CardImg width="100%" src={dish.image} alt={dish.name} />
+          <CardImg width="100%" src={baseURL + dish.image} alt={dish.name} />
           <CardBody>
             <CardTitle>{dish.name}</CardTitle>
             <CardText>{dish.description}</CardText>
@@ -136,13 +137,13 @@ class CommentForm extends Component {
                         minLength: minLength(3),
                         maxLength: maxLength(15),
                       }}
-                      model=".name"
+                      model=".author"
                       row={6}
                       id="name"
                     />
                     <Errors
                       className="text-danger"
-                      model=".name"
+                      model=".author"
                       show="touched"
                       messages={{
                         required: 'Required! ',

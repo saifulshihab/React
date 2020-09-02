@@ -7,7 +7,7 @@ export const Dishes = (state = {isLoading: true, errMess:null, dishes:[]}, actio
         case ActionType.DISHES_LOADING:
             return {...state, isLoading:true, errMess: null, dishes: []};
         case ActionType.DISHES_FAILED:
-            return {...state, isLoading:false, errMess: action.payload};
+            return {...state, isLoading:false, errMess: action.payload, dishes: []};
         default:
             return state;
   }

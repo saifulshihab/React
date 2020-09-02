@@ -13,7 +13,7 @@ export const ConfigureStore = () => {
     combineReducers({
       dishes: Dishes,
       comments: Comments,
-      promotion: Promotion,
+      promotions: Promotion,
       leader: Leaders,
       ...createForms({
         feedback: InitialFeedback,
