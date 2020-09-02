@@ -1,19 +1,54 @@
 import * as ActionType from './ActionTypes';
 import { baseURL } from '../shared/baseURL';
 
-export const addComment = (dishId, rating, author, comment) => ({
+export const addComment = (comment) => ({
   type: ActionType.ADD_COMMENT,
-  payload: {
+  payload: comment,
+});
+
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {
+  const newComment = {
     dishId: dishId,
     rating: rating,
     author: author,
     comment: comment,
-  },
-});
+  };
+  newComment.date = new Date().toISOString();
+  return fetch(baseURL + 'comments', {
+    method: 'POST',
+    body: JSON.stringify(newComment),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response;
+        } else {
+          const error = new Error(
+            `Error ${response.status} : ${response.statusText}.`
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      (error) => {
+        const errormess = new Error(error.message);
+        throw errormess;
+      }
+    )
+    .then((response) => response.json())
+    .then((response) => dispatch(addComment(response)))
+    .catch((error) =>
+      alert(`Your comment could not be posted! Error ${error.message}`)
+    );
+};
 
 export const fetchDishes = () => (dispatch) => {
   dispatch(dishLoading(true));
-  return fetch(baseURL + 'dishess')
+  return fetch(baseURL + 'dishes')
     .then(
       (response) => {
         if (response.ok) {
