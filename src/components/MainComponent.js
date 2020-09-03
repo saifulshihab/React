@@ -15,6 +15,8 @@ import {
   fetchDishes,
   fetchComments,
   fetchPromos,
+  fetchLeaders,
+  postFeedback,
 } from '../redux/ActionCreators';
 import { actions } from 'react-redux-form';
 
@@ -30,6 +32,8 @@ const mapStateToProps = (state) => {
 const mapsDispatchToProps = (dispatch) => ({
   postComment: (dishId, rating, author, comment) =>
     dispatch(postComment(dishId, rating, author, comment)),
+  postFeedback: (firstname, lastname, telnum, email) =>
+    dispatch(postComment(firstname, lastname, telnum, email)),
   fetchDishes: () => {
     dispatch(fetchDishes());
   },
@@ -42,16 +46,17 @@ const mapsDispatchToProps = (dispatch) => ({
   fetchPromos: () => {
     dispatch(fetchPromos());
   },
+  fetchLeaders: () => {
+    dispatch(fetchLeaders());
+  },
 });
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-  }
   componentDidMount() {
     this.props.fetchDishes();
     this.props.fetchComments();
     this.props.fetchPromos();
+    this.props.fetchLeaders();
   }
   onDishSelect(dishId) {
     this.setState({ selectedDish: dishId });
@@ -71,7 +76,11 @@ class Main extends Component {
           }
           promosLoading={this.props.promotions.isLoading}
           promosErrorMess={this.props.promotions.errMess}
-          leaders={this.props.leader.filter((leader) => leader.featured)[0]}
+          leaders={
+            this.props.leader.leaders.filter((leader) => leader.featured)[0]
+          }
+          leadersLoading={this.props.leader.isLoading}
+          leadersesErrorMess={this.props.leader.errMess}
         />
       );
     };
@@ -99,7 +108,11 @@ class Main extends Component {
       <div>
         <Header />
         <TransitionGroup>
-          <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
+          <CSSTransition
+            key={this.props.location.key}
+            classNames="page"
+            timeout={300}
+          >
             <Switch location={this.props.location}>
               <Route path="/home" component={HomePage} />
               <Route
@@ -111,13 +124,16 @@ class Main extends Component {
               <Route
                 exact
                 path="/aboutus"
-                component={() => <About leaders={this.props.leader} />}
+                component={() => <About leaders={this.props.leader.leaders} />}
               />
               <Route
                 exact
                 path="/contactus"
                 component={() => (
-                  <Contact resetFeedbackForm={this.props.resetFeedbackForm} />
+                  <Contact
+                    postFeedback={postFeedback}
+                    resetFeedbackForm={this.props.resetFeedbackForm}
+                  />
                 )}
               />
               <Redirect to="/home" />

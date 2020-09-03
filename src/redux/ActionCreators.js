@@ -157,3 +157,79 @@ export const addPromos = (promos) => ({
   type: ActionType.ADD_PROMOS,
   payload: promos,
 });
+
+export const fetchLeaders = () => (dispatch) => {
+  dispatch(leadersLoading(true));
+  return fetch(baseURL + 'leaders')
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response;
+        } else {
+          const error = new Error(
+            `Error ${response.status} : ${response.statusText}.`
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      (error) => {
+        const errormess = new Error(error.message);
+        throw errormess;
+      }
+    )
+    .then((response) => response.json())
+    .then((leader) => dispatch(addLeaders(leader)))
+    .catch((error) => dispatch(promosFailed(error.message)));
+};
+
+export const leadersLoading = () => ({
+  type: ActionType.LEADERS_LOADING,
+});
+
+export const leadersFailed = (errmess) => ({
+  type: ActionType.LEADERS_FAILED,
+  payload: errmess,
+});
+
+export const addLeaders = (leader) => ({
+  type: ActionType.ADD_LEADERS,
+  payload: leader,
+});
+
+export const postFeedback = (firstname, lastname, telnum, email) => {
+  const newFeedback = {
+    firstname: firstname,
+    lastname: lastname,
+    telnum: telnum,
+    email: email,
+  };
+  return fetch(baseURL + 'feedback', {
+    method: 'POST',
+    body: JSON.stringify(newFeedback),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response;
+        } else {
+          const error = new Error(
+            `Error ${response.status} : ${response.statusText}.`
+          );
+          error.response = response;
+          throw error;
+        }
+      },
+      (error) => {
+        const errormess = new Error(error.message);
+        throw errormess;
+      }
+    )
+    .then((response) => response.json())
+    .then((response) => alert(JSON.stringify(response)))
+    .catch((error) => alert(error.message));
+};

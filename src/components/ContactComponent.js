@@ -16,8 +16,8 @@ class Contact extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit(values) {
-    alert(values);
     this.props.resetFeedbackForm();
+    this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email);
   }
   render() {
     const required = (val) => val && val.length;
